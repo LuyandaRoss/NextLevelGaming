@@ -1,5 +1,8 @@
 {
   "plugins": [
     "expo-status-bar"
-  ]
+  ],
+  "android": {
+    "package": "com.zeen0.nextlevelgamingapp"
+  }
 }
