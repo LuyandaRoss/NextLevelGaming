@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment | Next Level Gaming</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav>
+        <div class="logo">
+            <span>NEXT LEVEL</span>
+            <span>GAMING & ESPORTS ARENA</span>
+        </div>
+        <button class="menu-toggle" onclick="document.querySelector('.nav-links').classList.toggle('show')">☰</button>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="overview.html">Overview</a>
+            <a href="experience.html">Experiences</a>
+            <a href="tournaments.html">Tournaments</a>
+            <a href="membership.html">VIP</a>
+            <a href="faq.html">FAQ</a>
+            <a href="signup.html">Sign Up</a>
+            <a href="profile.html">Profile</a>
+            <a href="payment.html" class="active">Pay</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="fees.html" class="btn-book">BOOK NOW</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="section-title">
+            <h2>Secure Checkout</h2>
+            <p>Complete your booking by selecting a payment method below.</p>
+        </div>
+
+        <div class="grid-2">
+            <!-- Order Summary -->
+            <div class="card">
+                <div class="card-content">
+                    <h3>Order Summary</h3>
+                    <div class="quote-row"><span>Booking:</span><span>Esports Arena</span></div>
+                    <div class="quote-row"><span>Players:</span><span>2 Players</span></div>
+                    <div class="quote-row"><span>Duration:</span><span>3 Hours</span></div>
+                    <div class="quote-row"><span>Add-ons:</span><span>Snack Combo</span></div>
+                    <div class="quote-row" style="border-top: 1px solid #333; padding-top: 10px; margin-top: 10px;"><span>Subtotal:</span><span>R750.00</span></div>
+                    <div class="quote-row"><span>Discount (10%):</span><span style="color: var(--crimson);">-R75.00</span></div>
+                    <div class="quote-row"><span>VAT (15%):</span><span>R112.50</span></div>
+                    <div class="quote-row total" style="color: var(--crimson);"><span>Total:</span><span>R787.50</span></div>
+                </div>
+            </div>
+
+            <!-- Payment Form -->
+            <div class="card">
+                <div class="card-content">
+                    <h3>Select Payment Method</h3>
+                    
+                    <!-- Payment Options Grid -->
+                    <div class="payment-methods">
+                        <!-- Card / FNB -->
+                        <button type="button" class="pay-btn active" onclick="selectPayment('card', this)">
+                            <img src="images/FNB.jpg" alt="FNB"> 
+                            Card / FNB
+                        </button>
+                        
+                        <!-- Google Pay -->
+                        <button type="button" class="pay-btn" onclick="selectPayment('gpay', this)">
+                            <img src="images/google.PNG" alt="Google Pay">
+                            Google Pay
+                        </button>
+                        
+                        <!-- Instant EFT -->
+                        <button type="button" class="pay-btn" onclick="selectPayment('eft', this)" style="grid-column: span 2;">
+                            <span class="pay-icon">💰</span> 
+                            Instant EFT
+                        </button>
+                    </div>
+
+                    <!-- Form Container -->
+                    <form onsubmit="event.preventDefault(); alert('Payment successful! Booking confirmed.'); window.location.href='profile.html';">
+                        
+                        <!-- Card Form -->
+                        <div id="form-card" class="payment-form">
+                            <div class="form-group">
+                                <label>Name on Card</label>
+                                <input type="text" placeholder="Alex Mercer" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Card Number</label>
+                                <input type="text" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                            </div>
+                            <div style="display: flex; gap: 15px;">
+                                <div class="form-group" style="flex: 1;">
+                                    <label>Expiry Date</label>
+                                    <input type="text" placeholder="MM/YY" maxlength="5" required>
+                                </div>
+                                <div class="form-group" style="flex: 1;">
+                                    <label>CVV</label>
+                                    <input type="text" placeholder="123" maxlength="3" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Google Pay Form -->
+                        <div id="form-gpay" class="payment-form" style="display: none;">
+                            <div style="text-align: center; padding: 30px 0;">
+                                <p style="color: var(--text-grey); margin-bottom: 20px; font-size: 1rem;">You will be redirected to Google Pay to complete your purchase securely.</p>
+                                <div style="background: #fff; padding: 15px; border-radius: 8px; display: inline-block;">
+                                    <img src="images/google.PNG" alt="Google Pay" style="height: 40px;">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Instant EFT Form -->
+                        <div id="form-eft" class="payment-form" style="display: none;">
+                            <div class="form-group">
+                                <label>Select Your Bank</label>
+                                <select required>
+                                    <option value="">-- Choose Bank --</option>
+                                    <option>FNB</option>
+                                    <option>Standard Bank</option>
+                                    <option>ABSA</option>
+                                    <option>Nedbank</option>
+                                    <option>Capitec</option>
+                                    <option>TymeBank</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Account Holder Name</label>
+                                <input type="text" placeholder="Alex Mercer" required>
+                            </div>
+                            <p style="color: var(--text-grey); font-size: 0.85rem; margin-bottom: 15px;">You will be redirected to your bank's secure portal to approve the payment.</p>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" id="submitBtn" class="btn btn-primary btn-block" style="margin-top: 20px;">Pay with Card / FNB</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Next Level Gaming & Esports Arena. All rights reserved.</p>
+    </footer>
+
+    <script>
+        function selectPayment(method, btnElement) {
+            // 1. Update Button Styles
+            document.querySelectorAll('.pay-btn').forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+
+            // 2. Hide all forms
+            document.querySelectorAll('.payment-form').forEach(form => form.style.display = 'none');
+
+            // 3. Show the selected form
+            document.getElementById('form-' + method).style.display = 'block';
+
+            // 4. Update the Submit button text
+            const submitBtn = document.getElementById('submitBtn');
+            if (method === 'gpay') {
+                submitBtn.innerText = 'Pay with Google Pay';
+            } else if (method === 'eft') {
+                submitBtn.innerText = 'Pay with Instant EFT';
+            } else {
+                submitBtn.innerText = 'Pay with Card / FNB';
+            }
+        }
+    </script>
+</body>
+</html>

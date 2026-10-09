@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up | Next Level Gaming</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav>
+        <div class="logo"><span>NEXT LEVEL</span><span>GAMING & ESPORTS ARENA</span></div>
+        <button class="menu-toggle" onclick="document.querySelector('.nav-links').classList.toggle('show')">☰</button>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="overview.html">Overview</a>
+            <a href="experience.html">Experiences</a>
+            <a href="tournaments.html">Tournaments</a>
+            <a href="membership.html">VIP</a>
+            <a href="faq.html">FAQ</a>
+            <a href="signup.html" class="active">Sign Up</a>
+            <a href="profile.html">Profile</a>
+            <a href="payment.html">Pay</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+            <a href="fees.html" class="btn-book">BOOK NOW</a>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="section-title">
+            <h2>Create Your Account</h2>
+            <p>Join Next Level Gaming to book faster and track your stats.</p>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-content">
+                    <h3>Why Sign Up?</h3>
+                    <ul>
+                        <li>⚡ Faster checkout and booking process</li>
+                        <li>📊 Track your tournament stats and history</li>
+                        <li>🎁 Exclusive member-only discounts and offers</li>
+                        <li>📰 Early access to event announcements</li>
+                        <li>💳 Save payment methods securely for future bookings</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-content">
+                    <h3>Account Details</h3>
+                    <form onsubmit="event.preventDefault(); alert('Account created! (Backend coming soon)'); window.location.href='profile.html';">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text" placeholder="e.g. Alex Mercer" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address</label>
+                            <input type="email" placeholder="alex@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" placeholder="0821234567" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Gamer Tag (Nickname)</label>
+                            <input type="text" placeholder="e.g. ShadowStrike" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input type="password" placeholder="Minimum 8 characters" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm Password</label>
+                            <input type="password" placeholder="Re-enter password" required>
+                        </div>
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                                <input type="checkbox" required style="width: auto;">
+                                I agree to the Terms & Conditions and Privacy Policy
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 20px;">Create Account</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer><p>&copy; 2026 Next Level Gaming & Esports Arena. All rights reserved.</p></footer>
+</body>
+</html>

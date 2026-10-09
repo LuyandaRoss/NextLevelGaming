@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculate Fees | Next Level Gaming</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <nav>
+    <div class="logo">
+        <span>NEXT LEVEL GAMING</span>
+        <span>GAMING & ESPORTS ARENA</span>
+    </div>
+    <button class="menu-toggle" onclick="document.querySelector('.nav-links').classList.toggle('show')">☰</button>
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="overview.html">Overview</a>
+        <a href="experience.html">Experiences</a>
+        <a href="tournaments.html">Tournaments</a>
+        <a href="membership.html">VIP</a>
+        <a href="faq.html">FAQ</a>
+        <a href="signup.html">Sign Up</a>
+        <a href="profile.html">Profile</a>
+        <a href="payment.html">Pay</a>
+        <a href="about.html">About</a>
+        <a href="contact.html">Contact</a>
+        <a href="fees.html" class="btn-book">BOOK NOW</a>
+    </div>
+</nav>
+    <main class="container">
+        <div class="section-title">
+            <h2>Calculate Fees</h2>
+            <p>Get an instant live quotation</p>
+        </div>
+
+        <form id="feeForm" onsubmit="event.preventDefault(); calculateTotal();">
+            <!-- Step 1 -->
+            <div class="form-step">
+                <h3>1. Customer Information</h3>
+                <div class="form-group"><label>First Name</label><input type="text" placeholder="e.g. Alex" required></div>
+                <div class="form-group"><label>Surname</label><input type="text" placeholder="e.g. Mercer" required></div>
+                <div class="form-group"><label>Email Address</label><input type="email" placeholder="alex@example.com" required></div>
+                <div class="form-group"><label>Phone Number</label><input type="tel" placeholder="0821234567" required></div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="form-step">
+                <h3>2. Select Experience</h3>
+                <div class="exp-selector">
+                    <button type="button" class="exp-btn active" onclick="selectExperience(this, 80)">PC Gaming</button>
+                    <button type="button" class="exp-btn" onclick="selectExperience(this, 60)">Console Gaming</button>
+                    <button type="button" class="exp-btn" onclick="selectExperience(this, 120)">Esports Arena</button>
+                </div>
+                <input type="hidden" id="baseRate" value="80">
+            </div>
+
+            <!-- Step 3 -->
+            <div class="form-step">
+                <h3>3. Players & Duration</h3>
+                <div class="form-group">
+                    <label>Number of Players (1-20)</label>
+                    <div class="stepper">
+                        <button type="button" onclick="updateStepper('players', -1)">-</button>
+                        <input type="number" id="players" value="1" min="1" max="20" readonly>
+                        <button type="button" onclick="updateStepper('players', 1)">+</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Session Hours (1 - 8 Hours)</label>
+                    <div class="stepper">
+                        <button type="button" onclick="updateStepper('hours', -1)">-</button>
+                        <input type="number" id="hours" value="1" min="1" max="8" readonly>
+                        <button type="button" onclick="updateStepper('hours', 1)">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="form-step">
+                <h3>4. Optional Extras</h3>
+                <div class="extra-item">
+                    <label><input type="checkbox" id="snacks" value="65"> Gamer Snack Pack & Energy Drink</label>
+                    <span class="price">+R65/p</span>
+                </div>
+                <div class="extra-item">
+                    <label><input type="checkbox" id="vr" value="50"> VR Experience Access (Coming Soon Demo)</label>
+                    <span class="price">+R50/p</span>
+                </div>
+                <div class="extra-item">
+                    <label><input type="checkbox" id="headset" value="30"> Tournament Pro Noise-Cancelling Headset</label>
+                    <span class="price">+R30/p</span>
+                </div>
+                <div class="extra-item">
+                    <label><input type="checkbox" id="vip" value="100"> Private VIP Lounge Access</label>
+                    <span class="price">+R100/p</span>
+                </div>
+            </div>
+
+            <!-- Summary -->
+            <div class="quote-box">
+                <h4>Quotation Summary</h4>
+                <div class="quote-row"><span>Subtotal</span><span id="subtotal">R 80.00</span></div>
+                <div class="quote-row"><span>VAT (15%)</span><span id="vat">R 12.00</span></div>
+                <div class="quote-row total"><span>Estimated Total</span><span id="total">R 92.00</span></div>
+            </div>
+
+            <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+                <button type="submit" class="btn btn-primary btn-block">Continue to Booking</button>
+                <button type="reset" class="btn btn-secondary btn-block" onclick="resetForm()">Reset Form</button>
+            </div>
+        </form>
+    </main>
+    <footer><p>&copy; 2026 Next Level Gaming & Esports Arena. All rights reserved.</p></footer>
+
+    <script>
+        let currentBaseRate = 80;
+
+        function selectExperience(btn, rate) {
+            document.querySelectorAll('.exp-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('baseRate').value = rate;
+            currentBaseRate = rate;
+            calculateTotal();
+        }
+
+        function updateStepper(id, change) {
+            const input = document.getElementById(id);
+            let value = parseInt(input.value) + change;
+            const min = parseInt(input.min);
+            const max = parseInt(input.max);
+            if (value >= min && value <= max) {
+                input.value = value;
+                calculateTotal();
+            }
+        }
+
+        function calculateTotal() {
+            const players = parseInt(document.getElementById('players').value);
+            const hours = parseInt(document.getElementById('hours').value);
+            
+            let subtotal = currentBaseRate * players * hours;
+            
+            if (document.getElementById('snacks').checked) subtotal += 65 * players;
+            if (document.getElementById('vr').checked) subtotal += 50 * players;
+            if (document.getElementById('headset').checked) subtotal += 30 * players;
+            if (document.getElementById('vip').checked) subtotal += 100 * players;
+
+            let vat = subtotal * 0.15;
+            let total = subtotal + vat;
+
+            const formatter = new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' });
+            
+            document.getElementById('subtotal').innerText = formatter.format(subtotal);
+            document.getElementById('vat').innerText = formatter.format(vat);
+            document.getElementById('total').innerText = formatter.format(total);
+        }
+
+        function resetForm() {
+            currentBaseRate = 80;
+            document.querySelectorAll('.exp-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector('.exp-btn').classList.add('active');
+            document.getElementById('players').value = 1;
+            document.getElementById('hours').value = 1;
+            calculateTotal();
+        }
+    </script>
+</body>
+</html>
