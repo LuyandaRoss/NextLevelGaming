@@ -14,7 +14,7 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
       {/* Brand Logo Header */}
       <View style={styles.brandContainer}>
         <Image 
-          source={require('../../images&vids/WhatsApp Image 2026-10-08 at 10.31.50 (2).jpeg')} 
+          source={require('../../images&vids/logo.jpeg')} 
           style={styles.logoImage}
           resizeMode="contain"
         />

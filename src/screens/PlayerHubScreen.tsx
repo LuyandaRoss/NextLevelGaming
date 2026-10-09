@@ -60,7 +60,6 @@ export function PlayerHubScreen() {
             </View>
             <View style={styles.videoInfo}>
               <Text style={styles.videoTitle}>{video.title}</Text>
-              {/* Fixed multiline string interpolation for video duration and views */}
               <Text style={styles.videoMeta}>{video.duration} • {video.views} views</Text>
             </View>
           </TouchableOpacity>
