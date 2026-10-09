@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ScrollView, View, Text, StyleSheet, Alert } from 'react-native';
+import MapView, { Marker } from 'react-native-maps';
 import { COLORS } from '../theme/colors';
 import { SectionTitle } from '../components/SectionTitle';
 import { InputField } from '../components/InputField';
@@ -14,6 +15,14 @@ export const ContactScreen: React.FC<Props> = () => {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
+
+  // Johannesburg Arena Coordinates
+  const arenaLocation = {
+    latitude: -26.1076,
+    longitude: 28.0567,
+    latitudeDelta: 0.01,
+    longitudeDelta: 0.01,
+  };
 
   const handleSendMessage = () => {
     if (!name || !email || !message) {
@@ -34,15 +43,26 @@ export const ContactScreen: React.FC<Props> = () => {
       {/* Venue Info */}
       <View style={styles.infoCard}>
         <Text style={styles.infoHeading}>VENUE DETAILS</Text>
-        <Text style={styles.infoText}>📍 Johannesburg, South Africa</Text>
+        <Text style={styles.infoText}>📍 154 Rivonia Road, Sandton, Johannesburg, South Africa</Text>
         <Text style={styles.infoText}>📞 Phone: +27 (0)11 987 6543</Text>
         <Text style={styles.infoText}>✉ Email: info@nextlevelgaming.co.za</Text>
         <Text style={styles.infoText}>🌐 Socials: @NextLevelArena_ZA</Text>
       </View>
 
-      {/* Map visual placeholder */}
-      <View style={styles.mapPlaceholder}>
-        <Text style={styles.mapText}>[ ARENA LOCATION MAP - JOHANNESBURG ]</Text>
+      {/* Interactive Map View */}
+      <View style={styles.mapContainer}>
+        <MapView
+          style={styles.map}
+          initialRegion={arenaLocation}
+          customMapStyle={darkMapStyle}
+        >
+          <Marker
+            coordinate={{ latitude: arenaLocation.latitude, longitude: arenaLocation.longitude }}
+            title="Next Level Gaming & Esports Arena"
+            description="Johannesburg, South Africa"
+            pinColor="#E50914"
+          />
+        </MapView>
       </View>
 
       <Text style={styles.formHeader}>SEND US A DIRECT MESSAGE</Text>
@@ -57,6 +77,15 @@ export const ContactScreen: React.FC<Props> = () => {
   );
 };
 
+// Dark mode map theme matching your esports design system
+const darkMapStyle = [
+  { elementType: 'geometry', stylers: [{ color: '#212121' }] },
+  { elementType: 'labels.text.fill', stylers: [{ color: '#757575' }] },
+  { elementType: 'labels.text.stroke', stylers: [{ color: '#212121' }] },
+  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#2c2c2c' }] },
+  { featureType: 'water', elementType: 'geometry', stylers: [{ color: '#000000' }] },
+];
+
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.background },
   content: { padding: 16 },
@@ -70,16 +99,17 @@ const styles = StyleSheet.create({
   },
   infoHeading: { color: COLORS.primaryBright, fontSize: 13, fontWeight: '800', marginBottom: 8 },
   infoText: { color: COLORS.textPrimary, fontSize: 14, marginVertical: 3 },
-  mapPlaceholder: {
-    height: 120,
-    backgroundColor: COLORS.surfaceLight,
+  mapContainer: {
+    height: 200,
     borderRadius: 8,
+    overflow: 'hidden',
     borderWidth: 1,
     borderColor: COLORS.border,
-    justifyContent: 'center',
-    alignItems: 'center',
     marginBottom: 20,
   },
-  mapText: { color: COLORS.textMuted, fontSize: 12, fontWeight: '700' },
+  map: {
+    width: '100%',
+    height: '100%',
+  },
   formHeader: { color: COLORS.textPrimary, fontSize: 14, fontWeight: '800', marginBottom: 12 },
 });
