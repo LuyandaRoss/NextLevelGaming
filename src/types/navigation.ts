@@ -29,9 +29,13 @@ export type RootStackParamList = {
   PCGaming: undefined;
   ConsoleGaming: undefined;
   Esports: undefined;
+  Tournaments: undefined;
+  VIPMembership: undefined;
+  PlayerHub: undefined;
   CalculateFees: { initialExperienceId?: string } | undefined;
   Booking: { quotation: QuotationParams };
   Confirmation: { booking: BookingConfirmationParams };
+  Checkout: { totalAmount?: number } | undefined;
   Contact: undefined;
   NotFound: undefined;
 };

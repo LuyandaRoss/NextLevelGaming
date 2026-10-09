@@ -20,11 +20,12 @@ import { BookingScreen } from '../screens/BookingScreen';
 import { ConfirmationScreen } from '../screens/ConfirmationScreen';
 import { ContactScreen } from '../screens/ContactScreen';
 import { NotFoundScreen } from '../screens/NotFoundScreen';
-
-// Import New Screens
 import LoginSignupScreen from '../screens/LoginSignupScreen';
 import NotificationsScreen from '../screens/NotificationsScreen';
 import SquadManagement from '../screens/SquadManagement';
+import { TournamentsScreen } from '../screens/TournamentsScreen';
+import { VIPMembershipScreen } from '../screens/VIPMembershipScreen';
+import { PlayerHubScreen } from '../screens/PlayerHubScreen';
 import CheckoutScreen from '../screens/CheckoutScreen';
 
 type AppStackParamList = RootStackParamList & {
@@ -75,12 +76,13 @@ export const AppNavigator = () => {
           <Stack.Screen name="Booking" component={BookingScreen} />
           <Stack.Screen name="Confirmation" component={ConfirmationScreen} />
           <Stack.Screen name="Contact" component={ContactScreen} />
-
-          {/* Newly Added Screens */}
           <Stack.Screen name="LoginSignup" component={LoginSignupScreen} />
           <Stack.Screen name="Notifications" component={NotificationsScreen} />
           <Stack.Screen name="SquadManagement" component={SquadManagement} />
           <Stack.Screen name="Checkout" component={CheckoutScreen} />
+          <Stack.Screen name="Tournaments" component={TournamentsScreen} />
+          <Stack.Screen name="VIPMembership" component={VIPMembershipScreen} />
+          <Stack.Screen name="PlayerHub" component={PlayerHubScreen} />
 
           <Stack.Screen name="NotFound" component={NotFoundScreen} />
         </Stack.Navigator>
