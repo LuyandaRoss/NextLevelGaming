@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { COLORS } from '../theme/colors';
 import { SectionTitle } from '../components/SectionTitle';
 import { InputField } from '../components/InputField';
 import { PlayerCounter } from '../components/PlayerCounter';
 import { PriceSummary } from '../components/PriceSummary';
 import { Button } from '../components/Button';
+import { KeyboardAwareScrollView } from '../components/KeyboardAwareScrollView';
 import { EXPERIENCES, ExperienceItem } from '../data/experiences';
 import { OPTIONAL_EXTRAS } from '../data/extras';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -149,28 +150,28 @@ export const CalculateFeesScreen: React.FC<Props> = ({ route, navigation }) => {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <KeyboardAwareScrollView style={styles.container} contentContainerStyle={styles.content}>
       <SectionTitle title="CALCULATE FEES" subtitle="Get an instant live quotation" />
 
       {/* Customer Info */}
       <Text style={styles.sectionHeader}>1. CUSTOMER INFORMATION</Text>
       <InputField
         label="First Name"
-        placeholder="e.g. Alex"
+        placeholder="e.g. Zeeno"
         value={name}
         onChangeText={setName}
         error={errors.name}
       />
       <InputField
         label="Surname"
-        placeholder="e.g. Mercer"
+        placeholder="e.g. Ross"
         value={surname}
         onChangeText={setSurname}
         error={errors.surname}
       />
       <InputField
         label="Email Address"
-        placeholder="alex@example.com"
+        placeholder="zeeno@example.com"
         keyboardType="email-address"
         value={email}
         onChangeText={setEmail}
@@ -241,7 +242,7 @@ export const CalculateFeesScreen: React.FC<Props> = ({ route, navigation }) => {
             style={[styles.extraRow, isSelected && styles.extraRowSelected]}
             onPress={() => toggleExtra(extra.id)}
           >
-            <Text style={styles.extraCheck}>{isSelected ? '☑' : '☐'}</Text>
+            <View style={[styles.extraCheck, isSelected && styles.extraCheckSelected]} />
             <Text style={styles.extraName}>{extra.name}</Text>
             <Text style={styles.extraPrice}>+R{extra.pricePerPerson}/p</Text>
           </TouchableOpacity>
@@ -256,7 +257,7 @@ export const CalculateFeesScreen: React.FC<Props> = ({ route, navigation }) => {
         <Button title="CONTINUE TO BOOKING" onPress={handleContinueToBooking} variant="primary" />
         <Button title="RESET FORM" onPress={handleReset} variant="outline" />
       </View>
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };
 
@@ -313,7 +314,18 @@ const styles = StyleSheet.create({
     borderColor: COLORS.primaryBright,
     backgroundColor: COLORS.surfaceLight,
   },
-  extraCheck: { color: COLORS.primaryBright, fontSize: 16, marginRight: 10 },
+  extraCheck: {
+    width: 16,
+    height: 16,
+    borderRadius: 3,
+    borderWidth: 1,
+    borderColor: COLORS.textMuted,
+    marginRight: 10,
+  },
+  extraCheckSelected: {
+    backgroundColor: COLORS.primaryBright,
+    borderColor: COLORS.primaryBright,
+  },
   extraName: { flex: 1, color: COLORS.textPrimary, fontSize: 13 },
   extraPrice: { color: COLORS.textSecondary, fontSize: 12, fontWeight: '700' },
   actionColumn: { gap: 8, marginTop: 10, marginBottom: 30 },

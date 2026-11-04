@@ -28,7 +28,7 @@ export const EsportsScreen: React.FC<Props> = ({ navigation }) => {
       <Text style={styles.subHeading}>ARENA HIGHLIGHTS</Text>
       {esportsData.features.map((feat, idx) => (
         <View key={idx} style={styles.featureRow}>
-          <Text style={styles.bullet}>✓</Text>
+          <Text style={styles.bullet}>-</Text>
           <Text style={styles.featureText}>{feat}</Text>
         </View>
       ))}

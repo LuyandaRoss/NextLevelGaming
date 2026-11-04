@@ -1,97 +1,166 @@
 import React from 'react';
-import { StyleSheet, Text, View, ScrollView, SafeAreaView, TouchableOpacity, Alert } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { Button } from '../components/Button';
 import { COLORS } from '../theme/colors';
+import { RootStackParamList } from '../types/navigation';
 
-export function VIPMembershipScreen() {
-  const handleJoinPass = (passName: string) => {
-    Alert.alert('VIP Membership', `You selected the ${passName}. Proceeding to secure checkout.`);
+type Props = NativeStackScreenProps<RootStackParamList, 'VIPMembership'>;
+
+const PASSES = [
+  {
+    name: 'Bronze Pass',
+    tier: 'BRONZE',
+    price: 99,
+    color: '#A5683F',
+    benefits: [
+      '10% off all hourly rates',
+      'Free energy drink on Fridays',
+      'Priority booking (24 hours early)',
+      'Access to member-only Discord',
+    ],
+  },
+  {
+    name: 'Gold Pass',
+    tier: 'GOLD',
+    price: 199,
+    color: '#B99645',
+    benefits: [
+      '20% off all hourly rates',
+      'Free snack combo every visit',
+      'Access to VIP Lounge',
+      'Free entry to weekly tournaments',
+      '1 hour free gaming per month',
+    ],
+  },
+  {
+    name: 'Platinum Pass',
+    tier: 'PLATINUM',
+    price: 399,
+    color: '#8D98A6',
+    benefits: [
+      'Unlimited casual gaming (off-peak)',
+      'Free entry to all tournaments',
+      'Exclusive Next Level merch drop',
+      'Dedicated locker and private headset',
+      '2 hours free gaming per month',
+    ],
+  },
+];
+
+export function VIPMembershipScreen({ navigation }: Props) {
+  const handleJoinPass = (pass: (typeof PASSES)[number]) => {
+    navigation.navigate('Checkout', {
+      itemName: `${pass.name} Membership`,
+      itemType: 'membership',
+      totalAmount: pass.price,
+      billingPeriod: 'month',
+    });
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <Text style={styles.headerTitle}>VIP MEMBERSHIP</Text>
-        <Text style={styles.headerSubtitle}>Level up your experience with exclusive perks, priority booking, and discounts.</Text>
+    <ScrollView style={styles.container} contentContainerStyle={styles.scrollContainer}>
+      <Text style={styles.headerTitle}>VIP MEMBERSHIP</Text>
+      <Text style={styles.headerSubtitle}>
+        Choose your membership and continue to the in-app checkout.
+      </Text>
 
-        {/* Bronze Pass */}
-        <View style={styles.card}>
-          <Text style={styles.passTitle}>Bronze Pass</Text>
-          <Text style={styles.perkItem}>• 10% off all hourly rates</Text>
-          <Text style={styles.perkItem}>• Free energy drink on Fridays</Text>
-          <Text style={styles.perkItem}>• Priority booking (24 hours early)</Text>
-          <Text style={styles.perkItem}>• Access to member-only Discord</Text>
-          <TouchableOpacity 
-            style={styles.actionButton}
-            onPress={() => handleJoinPass('Bronze Pass')}
-          >
-            <Text style={styles.actionButtonText}>JOIN BRONZE</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Gold Pass (Popular) */}
-        <View style={[styles.card, styles.popularCard]}>
-          <View style={styles.badgeContainer}>
-            <Text style={styles.badgeText}>POPULAR</Text>
+      {PASSES.map((pass, index) => (
+        <View
+          key={pass.tier}
+          style={[styles.card, index === 1 && styles.popularCard]}
+        >
+          {index === 1 ? (
+            <View style={styles.badgeContainer}>
+              <Text style={styles.badgeText}>POPULAR</Text>
+            </View>
+          ) : null}
+          <View style={[styles.membershipArt, { backgroundColor: pass.color }]}>
+            <View style={styles.artTopRow}>
+              <Text style={styles.artBrand}>NLG</Text>
+              <Text style={styles.artTier}>{pass.tier}</Text>
+            </View>
+            <View style={styles.artDivider} />
+            <Text style={styles.artTitle}>NEXT LEVEL GAMING</Text>
+            <Text style={styles.artFooter}>MEMBERSHIP CARD</Text>
+            <View style={styles.artAccent} />
           </View>
-          <Text style={styles.passTitle}>Gold Pass</Text>
-          <Text style={styles.perkItem}>• 20% off all hourly rates</Text>
-          <Text style={styles.perkItem}>• Free snack combo every visit</Text>
-          <Text style={styles.perkItem}>• Access to VIP Lounge</Text>
-          <Text style={styles.perkItem}>• Free entry to weekly tournaments</Text>
-          <Text style={styles.perkItem}>• 1 hour free gaming per month</Text>
-          <TouchableOpacity 
-            style={[styles.actionButton, styles.goldButton]}
-            onPress={() => handleJoinPass('Gold Pass')}
-          >
-            <Text style={[styles.actionButtonText, styles.goldButtonText]}>JOIN GOLD</Text>
-          </TouchableOpacity>
-        </View>
 
-        {/* Platinum Pass */}
-        <View style={styles.card}>
-          <Text style={styles.passTitle}>Platinum Pass</Text>
-          <Text style={styles.perkItem}>• Unlimited casual gaming (off-peak)</Text>
-          <Text style={styles.perkItem}>• Free entry to all tournaments</Text>
-          <Text style={styles.perkItem}>• Exclusive Next Level merch drop</Text>
-          <Text style={styles.perkItem}>• Dedicated locker & private headset</Text>
-          <Text style={styles.perkItem}>• 2 hours free gaming per month</Text>
-          <TouchableOpacity 
-            style={styles.actionButton}
-            onPress={() => handleJoinPass('Platinum Pass')}
-          >
-            <Text style={styles.actionButtonText}>JOIN PLATINUM</Text>
-          </TouchableOpacity>
+          <Text style={styles.passTitle}>{pass.name}</Text>
+          <Text style={styles.price}>R{pass.price} <Text style={styles.pricePeriod}>/ month</Text></Text>
+          {pass.benefits.map((benefit) => (
+            <Text key={benefit} style={styles.perkItem}>• {benefit}</Text>
+          ))}
+          <Button
+            title={`JOIN ${pass.tier}`}
+            onPress={() => handleJoinPass(pass)}
+            variant={index === 1 ? 'primary' : 'secondary'}
+            style={styles.joinButton}
+          />
         </View>
+      ))}
 
-        {/* Member Benefits Summary */}
-        <Text style={styles.sectionHeader}>MEMBER BENEFITS</Text>
-        <View style={styles.infoCard}>
-          <Text style={styles.ruleItem}>• <Text style={styles.ruleTitle}>Priority Booking:</Text> VIP members can book their favorite stations up to 7 days in advance.</Text>
-          <Text style={styles.ruleItem}>• <Text style={styles.ruleTitle}>Discounted Snacks:</Text> 15% off the entire cafeteria menu for Gold and Platinum members.</Text>
-          <Text style={styles.ruleItem}>• <Text style={styles.ruleTitle}>Tournament Seeding:</Text> Platinum members receive priority seeding in all official Next Level tournaments.</Text>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      <Text style={styles.sectionHeader}>MEMBER BENEFITS</Text>
+      <View style={styles.infoCard}>
+        <Text style={styles.ruleItem}>
+          • <Text style={styles.ruleTitle}>Priority Booking:</Text> VIP members can book their
+          favorite stations up to 7 days in advance.
+        </Text>
+        <Text style={styles.ruleItem}>
+          • <Text style={styles.ruleTitle}>Discounted Snacks:</Text> 15% off the entire cafeteria
+          menu for Gold and Platinum members.
+        </Text>
+        <Text style={styles.ruleItem}>
+          • <Text style={styles.ruleTitle}>Tournament Seeding:</Text> Platinum members receive
+          priority seeding in official Next Level tournaments.
+        </Text>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0D0D0D' },
-  scrollContainer: { padding: 20 },
-  headerTitle: { color: '#FFF', fontSize: 18, fontWeight: '900', letterSpacing: 1, marginBottom: 4 },
-  headerSubtitle: { color: '#888', fontSize: 12, marginBottom: 20 },
-  sectionHeader: { color: '#888', fontSize: 11, fontWeight: '700', marginBottom: 10, letterSpacing: 1, marginTop: 10 },
-  card: { backgroundColor: '#1A1A1A', padding: 16, borderRadius: 4, marginBottom: 16, borderWidth: 1, borderColor: '#262626' },
-  popularCard: { borderColor: '#E50914' },
-  badgeContainer: { position: 'absolute', top: -10, right: 16, backgroundColor: '#E50914', paddingHorizontal: 8, paddingVertical: 2, borderRadius: 2 },
-  badgeText: { color: '#FFF', fontSize: 9, fontWeight: 'bold', letterSpacing: 1 },
-  passTitle: { color: '#FFF', fontSize: 16, fontWeight: 'bold', marginBottom: 12 },
-  perkItem: { color: '#AAA', fontSize: 12, marginVertical: 4 },
-  actionButton: { backgroundColor: '#262626', padding: 12, alignItems: 'center', borderRadius: 4, marginTop: 14 },
-  actionButtonText: { color: '#FFF', fontSize: 11, fontWeight: 'bold', letterSpacing: 1 },
-  goldButton: { backgroundColor: '#FFF' },
-  goldButtonText: { color: '#000' },
-  infoCard: { backgroundColor: '#1A1A1A', padding: 16, borderRadius: 4, borderWidth: 1, borderColor: '#262626', marginBottom: 30 },
-  ruleItem: { color: '#AAA', fontSize: 12, marginVertical: 6, lineHeight: 18 },
-  ruleTitle: { color: '#FFF', fontWeight: 'bold' },
+  container: { flex: 1, backgroundColor: COLORS.background },
+  scrollContainer: { padding: 20, paddingBottom: 36 },
+  headerTitle: { color: COLORS.textPrimary, fontSize: 18, fontWeight: '900', letterSpacing: 1, marginBottom: 4 },
+  headerSubtitle: { color: COLORS.textSecondary, fontSize: 12, lineHeight: 18, marginBottom: 20 },
+  sectionHeader: { color: COLORS.textSecondary, fontSize: 11, fontWeight: '700', marginBottom: 10, letterSpacing: 1, marginTop: 10 },
+  card: { backgroundColor: COLORS.surface, padding: 16, borderRadius: 8, marginBottom: 16, borderWidth: 1, borderColor: COLORS.border },
+  popularCard: { borderColor: COLORS.primaryBright },
+  membershipArt: {
+    minHeight: 152,
+    borderRadius: 12,
+    padding: 16,
+    justifyContent: 'space-between',
+    overflow: 'hidden',
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+  },
+  artTopRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  artBrand: { color: '#FFFFFF', fontSize: 26, fontWeight: '900', letterSpacing: 3 },
+  artTier: { color: '#FFFFFF', fontSize: 11, fontWeight: '800', letterSpacing: 2 },
+  artDivider: { height: 1, width: '100%', backgroundColor: 'rgba(255,255,255,0.45)', marginTop: 10 },
+  artTitle: { color: '#FFFFFF', fontSize: 14, fontWeight: '800', letterSpacing: 1, marginTop: 14 },
+  artFooter: { color: 'rgba(255,255,255,0.8)', fontSize: 9, fontWeight: '700', letterSpacing: 2, marginTop: 4 },
+  artAccent: {
+    position: 'absolute',
+    width: 130,
+    height: 130,
+    borderRadius: 65,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+    right: -42,
+    bottom: -60,
+  },
+  badgeContainer: { alignSelf: 'flex-end', backgroundColor: COLORS.primaryBright, paddingHorizontal: 8, paddingVertical: 3, borderRadius: 3, marginBottom: 8 },
+  badgeText: { color: COLORS.textPrimary, fontSize: 9, fontWeight: '800', letterSpacing: 1 },
+  passTitle: { color: COLORS.textPrimary, fontSize: 16, fontWeight: '800' },
+  price: { color: COLORS.primaryBright, fontSize: 20, fontWeight: '900', marginTop: 4, marginBottom: 8 },
+  pricePeriod: { color: COLORS.textSecondary, fontSize: 12, fontWeight: '500' },
+  perkItem: { color: COLORS.textSecondary, fontSize: 12, lineHeight: 18, marginVertical: 3 },
+  joinButton: { marginTop: 12 },
+  infoCard: { backgroundColor: COLORS.surface, padding: 16, borderRadius: 8, borderWidth: 1, borderColor: COLORS.border, marginBottom: 20 },
+  ruleItem: { color: COLORS.textSecondary, fontSize: 12, marginVertical: 6, lineHeight: 18 },
+  ruleTitle: { color: COLORS.textPrimary, fontWeight: '700' },
 });

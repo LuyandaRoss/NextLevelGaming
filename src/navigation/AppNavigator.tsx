@@ -27,19 +27,32 @@ import { TournamentsScreen } from '../screens/TournamentsScreen';
 import { VIPMembershipScreen } from '../screens/VIPMembershipScreen';
 import { PlayerHubScreen } from '../screens/PlayerHubScreen';
 import CheckoutScreen from '../screens/CheckoutScreen';
+import PaymentScreen from '../screens/PaymentScreen';
 
 type AppStackParamList = RootStackParamList & {
-  LoginSignup: undefined;
+  LoginSignup: { returnTo?: 'Booking' } | undefined;
   Notifications: undefined;
   SquadManagement: undefined;
-  Checkout: undefined;
+  Payment: undefined;
+  Checkout: {
+    itemName?: string;
+    itemType?: 'booking' | 'membership';
+    totalAmount?: number;
+    billingPeriod?: string;
+  } | undefined;
 };
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
 export const AppNavigator = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [activeScreen, setActiveScreen] = useState('Loading');
   const navigationRef = React.useRef<any>(null);
+
+  const updateActiveScreen = () => {
+    const screenName = navigationRef.current?.getCurrentRoute()?.name;
+    if (screenName) setActiveScreen(screenName);
+  };
 
   const handleNavigate = (screenName: string) => {
     if (navigationRef.current) {
@@ -48,7 +61,11 @@ export const AppNavigator = () => {
   };
 
   return (
-    <NavigationContainer ref={navigationRef}>
+    <NavigationContainer
+      ref={navigationRef}
+      onReady={updateActiveScreen}
+      onStateChange={updateActiveScreen}
+    >
       <View style={styles.container}>
         <Header isMenuOpen={menuOpen} onToggleMenu={() => setMenuOpen(!menuOpen)} />
 
@@ -56,6 +73,7 @@ export const AppNavigator = () => {
           visible={menuOpen}
           onClose={() => setMenuOpen(false)}
           onNavigate={handleNavigate}
+          activeScreen={activeScreen}
         />
 
         <Stack.Navigator
@@ -79,6 +97,7 @@ export const AppNavigator = () => {
           <Stack.Screen name="LoginSignup" component={LoginSignupScreen} />
           <Stack.Screen name="Notifications" component={NotificationsScreen} />
           <Stack.Screen name="SquadManagement" component={SquadManagement} />
+          <Stack.Screen name="Payment" component={PaymentScreen} />
           <Stack.Screen name="Checkout" component={CheckoutScreen} />
           <Stack.Screen name="Tournaments" component={TournamentsScreen} />
           <Stack.Screen name="VIPMembership" component={VIPMembershipScreen} />

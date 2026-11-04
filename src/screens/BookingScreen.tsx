@@ -1,59 +1,84 @@
 import React, { useState } from 'react';
-import { ScrollView, View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import { COLORS } from '../theme/colors';
 import { SectionTitle } from '../components/SectionTitle';
 import { InputField } from '../components/InputField';
 import { PriceSummary } from '../components/PriceSummary';
 import { Button } from '../components/Button';
+import { KeyboardAwareScrollView } from '../components/KeyboardAwareScrollView';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList, BookingConfirmationParams } from '../types/navigation';
+import { useAuth } from '../context/AuthContext';
+import { formatDateForInput, validateBookingDateTime } from '../utils/bookingDate';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Booking'>;
 
 export const BookingScreen: React.FC<Props> = ({ route, navigation }) => {
   const { quotation } = route.params;
+  const { user, saveBooking } = useAuth();
 
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [specialRequest, setSpecialRequest] = useState('');
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validate = (): boolean => {
     let valid = true;
     const errs: Record<string, string> = {};
 
     if (!date.trim()) {
-      errs.date = 'Preferred date is required (e.g. YYYY-MM-DD)';
+      errs.date = 'Preferred date is required (YYYY-MM-DD).';
       valid = false;
-    }
-    if (!time.trim()) {
-      errs.time = 'Preferred time slot is required (e.g. 14:00)';
-      valid = false;
+    } else {
+      const dateTimeError = validateBookingDateTime(date, time);
+      if (dateTimeError?.toLowerCase().includes('time')) {
+        errs.time = dateTimeError;
+        valid = false;
+      } else if (dateTimeError) {
+        errs.date = dateTimeError;
+        valid = false;
+      }
     }
 
     setErrors(errs);
     return valid;
   };
 
-  const handleSubmitBooking = () => {
+  const handleSubmitBooking = async () => {
     if (!validate()) return;
 
-    // Generate random reference number
+    if (!user) {
+      navigation.navigate('LoginSignup', { returnTo: 'Booking' });
+      return;
+    }
+
     const refNum = 'NLG-' + Math.floor(100000 + Math.random() * 900000);
 
     const bookingPayload: BookingConfirmationParams = {
       ...quotation,
-      date,
-      time,
-      specialRequest,
+      date: date.trim(),
+      time: time.trim(),
+      specialRequest: specialRequest.trim(),
       bookingRef: refNum,
     };
 
-    navigation.replace('Confirmation', { booking: bookingPayload });
+    setIsSubmitting(true);
+    try {
+      await saveBooking(bookingPayload);
+      navigation.replace('Confirmation', { booking: bookingPayload });
+    } catch (error) {
+      Alert.alert(
+        'Unable to Save Booking',
+        error instanceof Error ? error.message : 'Please try again.',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <KeyboardAwareScrollView style={styles.container} contentContainerStyle={styles.content}>
       <SectionTitle title="BOOKING REQUEST" subtitle="Finalize your reservation details" />
 
       {/* Overview Card */}
@@ -67,18 +92,19 @@ export const BookingScreen: React.FC<Props> = ({ route, navigation }) => {
 
       <InputField
         label="Preferred Date (YYYY-MM-DD)"
-        placeholder="2026-10-25"
+        placeholder={formatDateForInput(new Date())}
         value={date}
         onChangeText={setDate}
         error={errors.date}
       />
 
       <InputField
-        label="Preferred Time Slot"
-        placeholder="14:00 PM"
+        label="Preferred Time (24-hour HH:mm)"
+        placeholder="14:00"
         value={time}
         onChangeText={setTime}
         error={errors.time}
+        keyboardType="numbers-and-punctuation"
       />
 
       <InputField
@@ -101,9 +127,10 @@ export const BookingScreen: React.FC<Props> = ({ route, navigation }) => {
         title="SUBMIT BOOKING REQUEST"
         onPress={handleSubmitBooking}
         variant="primary"
+        disabled={isSubmitting}
         style={{ marginBottom: 30 }}
       />
-    </ScrollView>
+    </KeyboardAwareScrollView>
   );
 };
 

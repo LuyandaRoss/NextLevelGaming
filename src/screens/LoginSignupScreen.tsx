@@ -1,80 +1,144 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { Button } from '../components/Button';
+import { InputField } from '../components/InputField';
+import { KeyboardAwareScrollView } from '../components/KeyboardAwareScrollView';
+import { useAuth } from '../context/AuthContext';
+import { COLORS } from '../theme/colors';
+import { RootStackParamList } from '../types/navigation';
 
-export default function LoginScreen() {
+type Props = NativeStackScreenProps<RootStackParamList, 'LoginSignup'>;
+
+export default function LoginSignupScreen({ navigation, route }: Props) {
+  const { signIn, signUp } = useAuth();
   const [isLogin, setIsLogin] = useState(true);
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const finishAuthentication = () => {
+    if (route.params?.returnTo === 'Booking') {
+      navigation.goBack();
+    } else {
+      navigation.replace('PlayerHub');
+    }
+  };
+
+  const handleSubmit = async () => {
+    const nextErrors: Record<string, string> = {};
+    if (!isLogin && !name.trim()) nextErrors.name = 'Enter your name.';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      nextErrors.email = 'Enter a valid email address.';
+    }
+    if (password.length < 8) nextErrors.password = 'Use a password with at least 8 characters.';
+
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) return;
+
+    setIsSubmitting(true);
+    try {
+      if (isLogin) {
+        await signIn(email, password);
+      } else {
+        await signUp(name, email, password);
+      }
+      finishAuthentication();
+    } catch (error) {
+      Alert.alert(
+        isLogin ? 'Unable to Log In' : 'Unable to Sign Up',
+        error instanceof Error ? error.message : 'Please try again.',
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const toggleMode = () => {
+    setIsLogin((current) => !current);
+    setErrors({});
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.logoText}>LEVEL UP</Text>
-        <Text style={styles.subtitleText}>
-          {isLogin ? 'WELCOME BACK, PLAYER' : 'CREATE YOUR ACCOUNT'}
+    <KeyboardAwareScrollView
+      style={styles.container}
+      contentContainerStyle={styles.content}
+    >
+      <View style={styles.header}>
+        <Text style={styles.logo}>NEXT LEVEL</Text>
+        <Text style={styles.subtitle}>
+          {isLogin ? 'WELCOME BACK' : 'CREATE YOUR ACCOUNT'}
         </Text>
       </View>
 
-      <View style={styles.formContainer}>
-        {!isLogin && (
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>FULL NAME</Text>
-            <TextInput style={styles.input} placeholder="Alex Morgan" placeholderTextColor="#666" />
-          </View>
-        )}
-
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>EMAIL ADDRESS</Text>
-          <TextInput 
-            style={styles.input} 
-            placeholder="alex@nexusgaming.co.za" 
-            placeholderTextColor="#666"
-            value={email}
-            onChangeText={setEmail}
-            keyboardType="email-address"
+      <View style={styles.form}>
+        {!isLogin ? (
+          <InputField
+            label="Full Name"
+            placeholder="Your name"
+            value={name}
+            onChangeText={setName}
+            error={errors.name}
+            autoCapitalize="words"
+            autoComplete="name"
           />
-        </View>
+        ) : null}
+        <InputField
+          label="Email Address"
+          placeholder="name@example.com"
+          value={email}
+          onChangeText={setEmail}
+          error={errors.email}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          autoComplete="email"
+        />
+        <InputField
+          label="Password"
+          placeholder="At least 8 characters"
+          value={password}
+          onChangeText={setPassword}
+          error={errors.password}
+          secureTextEntry
+          autoCapitalize="none"
+          autoComplete={isLogin ? 'current-password' : 'new-password'}
+        />
 
-        <View style={styles.inputGroup}>
-          <Text style={styles.label}>PASSWORD</Text>
-          <TextInput 
-            style={styles.input} 
-            placeholder="••••••••••••" 
-            placeholderTextColor="#666"
-            secureTextEntry
-            value={password}
-            onChangeText={setPassword}
-          />
-        </View>
-
-        <TouchableOpacity style={styles.primaryButton}>
-          <Text style={styles.primaryButtonText}>{isLogin ? 'LOG IN' : 'SIGN UP'}</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity 
-          style={styles.switchButton} 
-          onPress={() => setIsLogin(!isLogin)}
-        >
-          <Text style={styles.switchButtonText}>
-            {isLogin ? "Don't have an account? Sign Up" : "Already have an account? Log In"}
-          </Text>
-        </TouchableOpacity>
+        <Button
+          title={isLogin ? 'LOG IN' : 'CREATE ACCOUNT'}
+          onPress={handleSubmit}
+          disabled={isSubmitting}
+          style={styles.submitButton}
+        />
+        <Button
+          title={isLogin ? 'CREATE AN ACCOUNT' : 'I ALREADY HAVE AN ACCOUNT'}
+          onPress={toggleMode}
+          variant="outline"
+          disabled={isSubmitting}
+        />
+        <Text style={styles.localNotice}>
+          Accounts and bookings are saved on this device only. They are not synced to a server.
+        </Text>
       </View>
-    </SafeAreaView>
+    </KeyboardAwareScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#0D0D0D', padding: 20, justifyContent: 'center' },
-  headerContainer: { marginBottom: 30, alignItems: 'center' },
-  logoText: { color: '#E50914', fontSize: 24, fontWeight: '900', letterSpacing: 2 },
-  subtitleText: { color: '#FFFFFF', fontSize: 14, fontWeight: '600', marginTop: 10, letterSpacing: 1 },
-  formContainer: { width: '100%' },
-  inputGroup: { marginBottom: 20 },
-  label: { color: '#888', fontSize: 11, fontWeight: '700', marginBottom: 8, letterSpacing: 1 },
-  input: { backgroundColor: '#1A1A1A', color: '#FFF', padding: 14, borderRadius: 4, borderWidth: 1, borderColor: '#333', fontSize: 14 },
-  primaryButton: { backgroundColor: '#E50914', padding: 16, alignItems: 'center', borderRadius: 4, marginTop: 10 },
-  primaryButtonText: { color: '#FFF', fontWeight: 'bold', letterSpacing: 1, fontSize: 14 },
-  switchButton: { marginTop: 20, alignItems: 'center' },
-  switchButtonText: { color: '#888', fontSize: 12 }
+  container: { flex: 1, backgroundColor: COLORS.background },
+  content: { flexGrow: 1, justifyContent: 'center', padding: 20 },
+  header: { alignItems: 'center', marginBottom: 30 },
+  logo: { color: COLORS.primaryBright, fontSize: 24, fontWeight: '900', letterSpacing: 2 },
+  subtitle: { color: COLORS.textPrimary, fontSize: 14, fontWeight: '700', marginTop: 10 },
+  form: { width: '100%' },
+  submitButton: { marginTop: 8 },
+  localNotice: {
+    color: COLORS.textMuted,
+    fontSize: 12,
+    lineHeight: 18,
+    textAlign: 'center',
+    marginTop: 16,
+  },
 });

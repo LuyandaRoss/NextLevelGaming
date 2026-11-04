@@ -14,7 +14,7 @@ export const ConfirmationScreen: React.FC<Props> = ({ route, navigation }) => {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.statusBox}>
-        <Text style={styles.checkIcon}>✓</Text>
+        <Text style={styles.checkIcon}>-</Text>
         <Text style={styles.successTitle}>BOOKING REQUEST RECEIVED</Text>
         <Text style={styles.refText}>Reference #: {booking.bookingRef}</Text>
       </View>
@@ -38,6 +38,18 @@ export const ConfirmationScreen: React.FC<Props> = ({ route, navigation }) => {
       />
 
       <View style={styles.btnColumn}>
+        <Button
+          title="CONTINUE TO CHECKOUT"
+          onPress={() => navigation.navigate('Checkout', {
+            itemName: `${booking.experienceTitle} booking`,
+            itemType: 'booking',
+            totalAmount: booking.total,
+          })}
+          variant="primary"
+        />
+        <Text style={styles.paymentNote}>
+          Your booking request is saved. Payment is not complete until the venue confirms it.
+        </Text>
         <Button title="BACK TO HOME" onPress={() => navigation.navigate('Home')} variant="primary" />
         <Button title="VIEW EXPERIENCES" onPress={() => navigation.navigate('Overview')} variant="outline" />
       </View>
@@ -72,4 +84,5 @@ const styles = StyleSheet.create({
   cardTitle: { color: COLORS.textSecondary, fontSize: 12, fontWeight: '800', marginBottom: 8 },
   infoRow: { color: COLORS.textPrimary, fontSize: 14, marginVertical: 2 },
   btnColumn: { gap: 10, marginBottom: 30 },
+  paymentNote: { color: COLORS.textSecondary, fontSize: 12, lineHeight: 18, textAlign: 'center' },
 });

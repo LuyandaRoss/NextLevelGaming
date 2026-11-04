@@ -28,7 +28,7 @@ export const PCGamingScreen: React.FC<Props> = ({ navigation }) => {
       <Text style={styles.subHeading}>HARDWARE & FEATURES</Text>
       {pcData.features.map((feat, idx) => (
         <View key={idx} style={styles.featureRow}>
-          <Text style={styles.bullet}>✓</Text>
+          <Text style={styles.bullet}>-</Text>
           <Text style={styles.featureText}>{feat}</Text>
         </View>
       ))}

@@ -28,7 +28,7 @@ export const ConsoleGamingScreen: React.FC<Props> = ({ navigation }) => {
       <Text style={styles.subHeading}>CONSOLE FEATURES</Text>
       {consoleData.features.map((feat, idx) => (
         <View key={idx} style={styles.featureRow}>
-          <Text style={styles.bullet}>✓</Text>
+          <Text style={styles.bullet}>-</Text>
           <Text style={styles.featureText}>{feat}</Text>
         </View>
       ))}

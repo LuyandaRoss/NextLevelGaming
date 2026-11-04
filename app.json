@@ -2,7 +2,13 @@
   "plugins": [
     "expo-status-bar"
   ],
+  "icon": "./src/assets/app-icon.png",
   "android": {
+    "softwareKeyboardLayoutMode": "resize",
+    "adaptiveIcon": {
+      "foregroundImage": "./src/assets/app-icon.png",
+      "backgroundColor": "#0B0B0D"
+    },
     "package": "com.zeen0.nextlevelgamingapp"
   },
   "extra": {

@@ -67,13 +67,13 @@ export const HomeScreen: React.FC<Props> = ({ navigation }) => {
       {/* Why Choose Us */}
       <SectionTitle title="WHY CHOOSE NEXT LEVEL" />
       <View style={styles.infoCard}>
-        <Text style={styles.infoTitle}>⚡ 240Hz High Refresh Rigs</Text>
+        <Text style={styles.infoTitle}>240Hz High Refresh Rigs</Text>
         <Text style={styles.infoDesc}>Low latency network routing optimized for competitive gaming.</Text>
 
-        <Text style={[styles.infoTitle, { marginTop: 12 }]}>🏆 Official Tournaments & Events</Text>
+        <Text style={[styles.infoTitle, { marginTop: 12 }]}>Official Tournaments & Events</Text>
         <Text style={styles.infoDesc}>Hosting weekly scrims, school leagues, and corporate team events.</Text>
 
-        <Text style={[styles.infoTitle, { marginTop: 12 }]}>🎮 Next-Gen Console Lounges</Text>
+        <Text style={[styles.infoTitle, { marginTop: 12 }]}>Next-Gen Console Lounges</Text>
         <Text style={styles.infoDesc}>4K HDR OLED screens and private couch gaming zones.</Text>
       </View>
     </ScrollView>

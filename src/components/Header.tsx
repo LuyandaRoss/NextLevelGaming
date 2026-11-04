@@ -19,7 +19,15 @@ export const Header: React.FC<HeaderProps> = ({ onToggleMenu, isMenuOpen }) => {
         onPress={onToggleMenu}
         accessibilityLabel="Toggle Menu"
       >
-        <Text style={styles.hamburgerText}>{isMenuOpen ? '✕' : '☰'}</Text>
+        {isMenuOpen ? (
+          <Text style={styles.hamburgerText}>X</Text>
+        ) : (
+          <View style={styles.menuIcon}>
+            <View style={styles.menuLine} />
+            <View style={styles.menuLine} />
+            <View style={styles.menuLine} />
+          </View>
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -66,5 +74,14 @@ const styles = StyleSheet.create({
     color: COLORS.textPrimary,
     fontSize: 22,
     fontWeight: 'bold',
+  },
+  menuIcon: {
+    width: 20,
+    gap: 4,
+  },
+  menuLine: {
+    height: 2,
+    width: '100%',
+    backgroundColor: COLORS.textPrimary,
   },
 });

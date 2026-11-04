@@ -35,7 +35,16 @@ export type RootStackParamList = {
   CalculateFees: { initialExperienceId?: string } | undefined;
   Booking: { quotation: QuotationParams };
   Confirmation: { booking: BookingConfirmationParams };
-  Checkout: { totalAmount?: number } | undefined;
+  Payment: undefined;
+  Checkout: {
+    itemName?: string;
+    itemType?: 'booking' | 'membership';
+    totalAmount?: number;
+    billingPeriod?: string;
+  } | undefined;
   Contact: undefined;
+  LoginSignup: { returnTo?: 'Booking' } | undefined;
+  Notifications: undefined;
+  SquadManagement: undefined;
   NotFound: undefined;
 };
