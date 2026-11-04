@@ -1,4 +1,5 @@
 {
+  "slug": "next-level-gaming-app",
   "plugins": [
     "expo-status-bar"
   ],
@@ -15,5 +16,11 @@
     "eas": {
       "projectId": "80e0ba81-58b1-4ed1-81ae-bdf4ff3690cd"
     }
+  },
+  "updates": {
+    "url": "https://u.expo.dev/80e0ba81-58b1-4ed1-81ae-bdf4ff3690cd"
+  },
+  "runtimeVersion": {
+    "policy": "appVersion"
   }
 }
