@@ -23,19 +23,6 @@ const VALUES = [
   },
 ];
 
-const QUICK_FACTS = [
-  { value: '3', label: 'Gaming experiences: PC, console, and esports' },
-  { value: '1–8 hours', label: 'Session duration available in the fee calculator' },
-  { value: 'Sandton', label: 'Johannesburg, South Africa' },
-];
-
-const TIPS = [
-  'Choose the experience that fits your group: PC gaming, console gaming, or the esports arena.',
-  'Use the fee calculator to set your group size, session length, and optional extras before requesting a booking.',
-  'Choose a future booking date and a time in 24-hour format. For a booking today, select a time that has not passed.',
-  'For tournaments, review the event format and check-in details before registering your team.',
-];
-
 export const AboutScreen: React.FC<Props> = ({ navigation }) => {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -66,26 +53,6 @@ export const AboutScreen: React.FC<Props> = ({ navigation }) => {
           <View key={value.title} style={styles.valueItem}>
             <Text style={styles.valueTitle}>{value.title}</Text>
             <Text style={styles.body}>{value.description}</Text>
-          </View>
-        ))}
-      </View>
-
-      <View style={styles.card}>
-        <Text style={styles.heading}>QUICK FACTS</Text>
-        {QUICK_FACTS.map((fact) => (
-          <View key={fact.label} style={styles.factRow}>
-            <Text style={styles.factValue}>{fact.value}</Text>
-            <Text style={styles.factLabel}>{fact.label}</Text>
-          </View>
-        ))}
-      </View>
-
-      <View style={styles.card}>
-        <Text style={styles.heading}>TIPS FOR YOUR VISIT</Text>
-        {TIPS.map((tip, index) => (
-          <View key={tip} style={styles.tipRow}>
-            <Text style={styles.tipNumber}>{String(index + 1).padStart(2, '0')}</Text>
-            <Text style={styles.body}>{tip}</Text>
           </View>
         ))}
       </View>
@@ -155,38 +122,6 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: 3,
     textTransform: 'capitalize',
-  },
-  factRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
-    gap: 12,
-  },
-  factValue: {
-    minWidth: 80,
-    color: COLORS.primaryBright,
-    fontSize: 15,
-    fontWeight: '800',
-  },
-  factLabel: {
-    flex: 1,
-    color: COLORS.textSecondary,
-    fontSize: 13,
-    lineHeight: 19,
-  },
-  tipRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 12,
-    marginTop: 10,
-  },
-  tipNumber: {
-    color: COLORS.primaryBright,
-    fontSize: 13,
-    fontWeight: '800',
-    paddingTop: 2,
   },
   bookButton: {
     marginTop: 2,
