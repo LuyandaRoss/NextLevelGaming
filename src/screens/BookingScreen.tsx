@@ -65,7 +65,13 @@ export const BookingScreen: React.FC<Props> = ({ route, navigation }) => {
 
     setIsSubmitting(true);
     try {
-      await saveBooking(bookingPayload);
+      const delivery = await saveBooking(bookingPayload);
+      if (delivery.emailError) {
+        Alert.alert(
+          'Booking Saved — Email Not Sent',
+          `Your request is saved in your account, but the email notifications could not be sent. ${delivery.emailError}`,
+        );
+      }
       navigation.replace('Confirmation', { booking: bookingPayload });
     } catch (error) {
       Alert.alert(

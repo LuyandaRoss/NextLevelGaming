@@ -1,17 +1,21 @@
 import React, { useState } from 'react';
 import { ScrollView, View, Text, StyleSheet, Alert, Linking, Platform, TouchableOpacity } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
-import { WebView } from 'react-native-webview';
 import { COLORS } from '../theme/colors';
 import { SectionTitle } from '../components/SectionTitle';
 import { Button } from '../components/Button';
-
-const CONTACT_FORM_URL =
-  'https://docs.google.com/forms/d/e/1FAIpQLScpPd92J28NpGVEezbD1vuk6lHX_Ig1T2r2klYXcmpOmMZ4CA/viewform?embedded=true';
+import { InputField } from '../components/InputField';
+import { useAuth } from '../context/AuthContext';
+import { supabase } from '../lib/supabase';
 
 export const ContactScreen: React.FC = () => {
-  const [formError, setFormError] = useState(false);
-  const [formKey, setFormKey] = useState(0);
+  const { user } = useAuth();
+  const [name, setName] = useState('');
+  const [surname, setSurname] = useState('');
+  const [email, setEmail] = useState(user?.email ?? '');
+  const [phone, setPhone] = useState('');
+  const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Johannesburg Arena Coordinates
   const arenaLocation = {
@@ -37,6 +41,38 @@ export const ContactScreen: React.FC = () => {
       await Linking.openURL(url);
     } catch (error) {
       Alert.alert(`Unable to ${method}`, 'Please try again or use the contact form below.');
+    }
+  };
+
+  const submitContactMessage = async () => {
+    if (!name.trim() || !surname.trim() || !phone.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) || !message.trim()) {
+      Alert.alert('Check Your Details', 'Enter your name, surname, phone, a valid email address, and a message.');
+      return;
+    }
+    if (!supabase) {
+      Alert.alert('Contact Form Unavailable', 'Supabase is not configured in this app.');
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase.from('contact_messages').insert({
+        user_id: user?.id ?? null,
+        name: name.trim(),
+        surname: surname.trim(),
+        phone: phone.trim(),
+        email: email.trim().toLowerCase(),
+        message: message.trim(),
+      });
+      if (error) throw error;
+      setName('');
+      setSurname('');
+      setPhone('');
+      setMessage('');
+      Alert.alert('Message Sent', 'Your message has been saved. The team will be in touch.');
+    } catch (error) {
+      Alert.alert('Unable to Send Message', error instanceof Error ? error.message : 'Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -86,53 +122,14 @@ export const ContactScreen: React.FC = () => {
       />
 
       <Text style={styles.formHeader}>CONTACT FORM</Text>
-      {Platform.OS === 'web' ? (
-        <View style={styles.formFallback}>
-          <Text style={styles.formNote}>
-            The embedded Google Form is available in the Android and iOS app. Email us directly if you need help.
-          </Text>
-          <TouchableOpacity
-            onPress={() => handleOpenContactLink(
-              'mailto:info@nextlevelgaming.co.za',
-              'Email',
-            )}
-            accessibilityRole="button"
-          >
-            <Text style={styles.emailLink}>info@nextlevelgaming.co.za</Text>
-          </TouchableOpacity>
-        </View>
-      ) : formError ? (
-        <View style={styles.formFallback}>
-          <Text style={styles.formNote}>
-            The Google Form could not be loaded. Check your internet connection and try again.
-          </Text>
-          <Button
-            title="RELOAD CONTACT FORM"
-            onPress={() => {
-              setFormError(false);
-              setFormKey((key) => key + 1);
-            }}
-            variant="outline"
-          />
-        </View>
-      ) : (
-        <View style={styles.formContainer}>
-          <WebView
-            key={formKey}
-            source={{ uri: CONTACT_FORM_URL }}
-            style={styles.formWebView}
-            onError={() => setFormError(true)}
-            onHttpError={(event) => {
-              if (event.nativeEvent.statusCode >= 400) setFormError(true);
-            }}
-            startInLoadingState
-            javaScriptEnabled
-            domStorageEnabled
-            nestedScrollEnabled
-            bounces={false}
-          />
-        </View>
-      )}
+      <View style={styles.contactForm}>
+        <InputField label="First Name" placeholder="Your first name" value={name} onChangeText={setName} />
+        <InputField label="Surname" placeholder="Your surname" value={surname} onChangeText={setSurname} />
+        <InputField label="Email" placeholder="name@example.com" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" />
+        <InputField label="Phone" placeholder="+27..." value={phone} onChangeText={setPhone} keyboardType="phone-pad" />
+        <InputField label="Message" placeholder="How can we help?" value={message} onChangeText={setMessage} multiline numberOfLines={5} />
+        <Button title={isSubmitting ? 'SENDING...' : 'SEND MESSAGE'} onPress={submitContactMessage} disabled={isSubmitting} />
+      </View>
     </ScrollView>
   );
 };
@@ -180,23 +177,10 @@ const styles = StyleSheet.create({
   mapHint: { color: COLORS.textSecondary, fontSize: 12, marginTop: 8, textAlign: 'center' },
   mapButton: { marginTop: -12, marginBottom: 20 },
   formHeader: { color: COLORS.textPrimary, fontSize: 14, fontWeight: '800', marginBottom: 12 },
-  formContainer: {
-    height: 900,
-    overflow: 'hidden',
+  contactForm: {
     borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    marginBottom: 30,
-  },
-  formWebView: { flex: 1, backgroundColor: COLORS.background },
-  formFallback: {
     backgroundColor: COLORS.surface,
-    borderRadius: 8,
     padding: 16,
-    borderWidth: 1,
-    borderColor: COLORS.border,
     marginBottom: 30,
   },
-  formNote: { color: COLORS.textSecondary, fontSize: 12, lineHeight: 18, marginBottom: 12 },
-  emailLink: { color: COLORS.primaryBright, fontSize: 14, fontWeight: '700' },
 });

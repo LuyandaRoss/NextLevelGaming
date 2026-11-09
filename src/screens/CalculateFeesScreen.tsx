@@ -63,15 +63,9 @@ export const CalculateFeesScreen: React.FC<Props> = ({ route, navigation }) => {
 
     const calcSubtotal = baseFee + extrasTotal;
 
-    // Apply 10% discount for groups of 5 or more players
-    let calcDiscount = 0;
-    if (players >= 5) {
-      calcDiscount = calcSubtotal * 0.1;
-    }
-
-    const discountedSubtotal = calcSubtotal - calcDiscount;
-    const calcVat = discountedSubtotal * 0.15; // 15% VAT
-    const calcTotal = discountedSubtotal + calcVat;
+    const calcDiscount = 0;
+    const calcVat = Math.round(calcSubtotal * 0.15 * 100) / 100;
+    const calcTotal = calcSubtotal + calcVat;
 
     setSubtotal(calcSubtotal);
     setDiscount(calcDiscount);

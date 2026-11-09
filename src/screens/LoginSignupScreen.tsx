@@ -20,7 +20,7 @@ export default function LoginSignupScreen({ navigation, route }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const finishAuthentication = () => {
-    if (route.params?.returnTo === 'Booking') {
+    if (route.params?.returnTo === 'Booking' || route.params?.returnTo === 'Checkout') {
       navigation.goBack();
     } else {
       navigation.replace('PlayerHub');
@@ -119,7 +119,7 @@ export default function LoginSignupScreen({ navigation, route }: Props) {
           disabled={isSubmitting}
         />
         <Text style={styles.localNotice}>
-          Accounts and bookings are saved on this device only. They are not synced to a server.
+          Your account and booking records are securely synced with Supabase and available when you sign in on another device.
         </Text>
       </View>
     </KeyboardAwareScrollView>

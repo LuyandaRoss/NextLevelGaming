@@ -51,7 +51,7 @@ export const EXPERIENCES: ExperienceItem[] = [
     image: 'https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&w=1000&q=80',
     basePricePerHour: 120,
     minPlayers: 5,
-    maxPlayers: 50,
+    maxPlayers: 20,
     features: [
       '5v5 Tournament Main Stage',
       'Dedicated High-Speed Fiber Backbone',

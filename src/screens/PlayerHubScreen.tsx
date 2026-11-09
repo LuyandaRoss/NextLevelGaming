@@ -10,7 +10,7 @@ import { formatBookingDate, validateBookingDateTime } from '../utils/bookingDate
 type Props = NativeStackScreenProps<RootStackParamList, 'PlayerHub'>;
 
 function isUpcoming(booking: BookingConfirmationParams): boolean {
-  return validateBookingDateTime(booking.date, booking.time) === null;
+  return Boolean(booking.date && booking.time && validateBookingDateTime(booking.date, booking.time) === null);
 }
 
 function compareBookings(a: BookingConfirmationParams, b: BookingConfirmationParams): number {
@@ -18,7 +18,7 @@ function compareBookings(a: BookingConfirmationParams, b: BookingConfirmationPar
 }
 
 export function PlayerHubScreen({ navigation }: Props) {
-  const { user, bookings, activity, isLoading, storageError, signOut } = useAuth();
+  const { user, bookings, activity, orders, isLoading, storageError, signOut } = useAuth();
   const upcomingBookings = bookings.filter(isUpcoming).sort(compareBookings);
   const pastBookings = bookings.filter((booking) => !isUpcoming(booking)).sort(compareBookings).reverse();
 
@@ -48,7 +48,7 @@ export function PlayerHubScreen({ navigation }: Props) {
           <Text style={styles.eyebrow}>PLAYER PROFILE</Text>
           <Text style={styles.heading}>Sign in to your account</Text>
           <Text style={styles.bodyText}>
-            Create an account or log in to keep your booking requests and activity together on this device.
+            Create an account or log in to access your profile and booking requests across your devices.
           </Text>
           {storageError ? <Text style={styles.errorText}>{storageError}</Text> : null}
           <Button
@@ -75,7 +75,7 @@ export function PlayerHubScreen({ navigation }: Props) {
         <Text style={styles.caption}>
           Member since {new Date(user.createdAt).toLocaleDateString()}
         </Text>
-        <Text style={styles.caption}>Profile and booking data are stored on this device.</Text>
+        <Text style={styles.caption}>Your profile and booking requests are synced with your account.</Text>
       </View>
 
       {storageError ? <Text style={styles.errorText}>{storageError}</Text> : null}
@@ -86,10 +86,12 @@ export function PlayerHubScreen({ navigation }: Props) {
           <View key={booking.bookingRef} style={styles.bookingCard}>
             <Text style={styles.bookingTitle}>{booking.experienceTitle}</Text>
             <Text style={styles.bodyText}>
-              {formatBookingDate(booking.date)} at {booking.time}
+              {booking.date && booking.time
+                ? `${formatBookingDate(booking.date)} at ${booking.time}`
+                : 'Date and time to be confirmed'}
             </Text>
             <Text style={styles.caption}>Reference: {booking.bookingRef}</Text>
-            <Text style={styles.caption}>Status: Booking requested</Text>
+            <Text style={styles.caption}>Status: Pending venue confirmation</Text>
           </View>
         ))
       ) : (
@@ -109,7 +111,9 @@ export function PlayerHubScreen({ navigation }: Props) {
           <View key={booking.bookingRef} style={styles.bookingCard}>
             <Text style={styles.bookingTitle}>{booking.experienceTitle}</Text>
             <Text style={styles.bodyText}>
-              {formatBookingDate(booking.date)} at {booking.time}
+              {booking.date && booking.time
+                ? `${formatBookingDate(booking.date)} at ${booking.time}`
+                : 'Date and time to be confirmed'}
             </Text>
             <Text style={styles.caption}>Reference: {booking.bookingRef}</Text>
           </View>
@@ -117,6 +121,21 @@ export function PlayerHubScreen({ navigation }: Props) {
       ) : (
         <View style={styles.card}>
           <Text style={styles.bodyText}>Completed sessions will appear here.</Text>
+        </View>
+      )}
+
+      <Text style={styles.sectionTitle}>ORDERS & MEMBERSHIPS</Text>
+      {orders.length ? (
+        orders.map((order) => (
+          <View key={order.id} style={styles.bookingCard}>
+            <Text style={styles.bookingTitle}>{order.item}</Text>
+            <Text style={styles.bodyText}>R{order.amount.toFixed(2)} · {order.status.toUpperCase()}</Text>
+            <Text style={styles.caption}>{new Date(order.createdAt).toLocaleDateString()}</Text>
+          </View>
+        ))
+      ) : (
+        <View style={styles.card}>
+          <Text style={styles.bodyText}>Membership and order requests will appear here.</Text>
         </View>
       )}
 

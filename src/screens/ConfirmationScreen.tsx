@@ -39,16 +39,12 @@ export const ConfirmationScreen: React.FC<Props> = ({ route, navigation }) => {
 
       <View style={styles.btnColumn}>
         <Button
-          title="CONTINUE TO CHECKOUT"
-          onPress={() => navigation.navigate('Checkout', {
-            itemName: `${booking.experienceTitle} booking`,
-            itemType: 'booking',
-            totalAmount: booking.total,
-          })}
+          title="VIEW PLAYER PROFILE"
+          onPress={() => navigation.navigate('PlayerHub')}
           variant="primary"
         />
         <Text style={styles.paymentNote}>
-          Your booking request is saved. Payment is not complete until the venue confirms it.
+          This is a quotation request, not a confirmed reservation. No payment has been taken; the venue will contact you to confirm availability.
         </Text>
         <Button title="BACK TO HOME" onPress={() => navigation.navigate('Home')} variant="primary" />
         <Button title="VIEW EXPERIENCES" onPress={() => navigation.navigate('Overview')} variant="outline" />

@@ -43,7 +43,7 @@ export type RootStackParamList = {
     billingPeriod?: string;
   } | undefined;
   Contact: undefined;
-  LoginSignup: { returnTo?: 'Booking' } | undefined;
+  LoginSignup: { returnTo?: 'Booking' | 'Checkout' } | undefined;
   Notifications: undefined;
   SquadManagement: undefined;
   NotFound: undefined;

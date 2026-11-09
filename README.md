@@ -13,6 +13,20 @@ Maps Integration:`react-native-maps` (Interactive venue locator)
 Build & Deployment: Expo Application Services (EAS CLI)
 Version Control: Git & GitHub
 
+## Supabase setup
+
+The mobile app and website share the same Supabase project. Copy `.env.example` to `.env` and set:
+
+- `EXPO_PUBLIC_SUPABASE_URL`: the project's Supabase URL.
+- `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: the project's publishable/anon key (never use a service-role key in the app).
+- `EXPO_PUBLIC_API_BASE_URL`: the deployed website URL hosting the server-side email API.
+
+Run `npx expo start` after configuring the environment. Supabase Auth persists the session through AsyncStorage; profiles, bookings, membership orders, and notifications are loaded from Supabase using row-level security. Existing device-only app accounts are not migrated because their passwords were never stored in Supabase; users should sign in with their existing website account or create a Supabase account.
+
+Apply `supabase/migrations/202611090001_mobile_booking_details.sql` in the shared project's Supabase SQL Editor to add booking dates, times, requests, and references. The website deployment must also contain `api/order-notification.js`. Configure the server's `EMAILJS_ORDER_TEMPLATE_ID` in Vercel to send membership order notifications. Email service keys must remain server-side.
+
+Booking and membership submissions create pending records only. The app does not collect card details or process payments.
+
 📱 Core Features & Screens
 Home Screen (`HomeScreen.tsx`): Brand showcase, hero banners, quick links to setups, and arena highlights.
 Player Hub (`PlayerHubScreen.tsx`): Personalized user dashboard tracking upcoming sessions, past history, active esports squads, and tournament day video highlight reels.

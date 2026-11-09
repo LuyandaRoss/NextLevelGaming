@@ -1,2 +1,8 @@
-node_modules
+node_modules/
+.expo/
 next-level-gaming.apk
+build/
+dist/
+.env
+.env.*
+!.env.example
